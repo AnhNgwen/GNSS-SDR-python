@@ -65,7 +65,7 @@ class AcquisitionResult(Result):
         phasePoints = np.arange(samplesPerCode) * 2 * np.pi * ts
 
         # Number of the frequency bins for the given acquisition band (500Hz steps)
-        numberOfFrqBins = np.int(np.round(settings.acqSearchBand * 2) + 1)
+        numberOfFrqBins = int(np.round(settings.acqSearchBand * 2) + 1)
 
         # Generate all C/A codes and sample them according to the sampling freq.
         caCodesTable = settings.makeCaTable()
@@ -274,7 +274,7 @@ class AcquisitionResult(Result):
 
         acquiredSignals = self.peakMetric * (self.peakMetric > self._settings.acqThreshold)
 
-        plt.bar(range(1, 33), acquiredSignals, FaceColor=(0, 0.8, 0))
+        plt.bar(range(1, 33), acquiredSignals, facecolor=(0, 0.8, 0))
         plt.legend(['Not acquired signals', 'Acquired signals'])
         plt.show()
 

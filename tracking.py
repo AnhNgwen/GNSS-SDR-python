@@ -73,10 +73,10 @@ class TrackingResult(Result):
             absoluteSample = np.zeros(msToProcess)
 
             # Freq of the C/A code:
-            codeFreq_ = np.Inf * np.ones(msToProcess)
+            codeFreq_ = np.inf * np.ones(msToProcess)
 
             # Frequency of the tracked carrier wave:
-            carrFreq_ = np.Inf * np.ones(msToProcess)
+            carrFreq_ = np.inf * np.ones(msToProcess)
 
             # Outputs from the correlators (In-phase):
             I_P_ = np.zeros(msToProcess)
@@ -93,13 +93,13 @@ class TrackingResult(Result):
             Q_L_ = np.zeros(msToProcess)
 
             # Loop discriminators
-            dllDiscr = np.Inf * np.ones(msToProcess)
+            dllDiscr = np.inf * np.ones(msToProcess)
 
-            dllDiscrFilt = np.Inf * np.ones(msToProcess)
+            dllDiscrFilt = np.inf * np.ones(msToProcess)
 
-            pllDiscr = np.Inf * np.ones(msToProcess)
+            pllDiscr = np.inf * np.ones(msToProcess)
 
-            pllDiscrFilt = np.Inf * np.ones(msToProcess)
+            pllDiscrFilt = np.inf * np.ones(msToProcess)
 
             PRN = 0
 

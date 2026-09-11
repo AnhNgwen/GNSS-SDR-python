@@ -10,7 +10,7 @@ class NavigationResult(Result):
         self._results = trackResult.results
         self._channels = trackResult.channels
         self._settings = trackResult.settings
-        self._solutions = No
+        self._solutions = None
         self._eph = None
 
     @property
@@ -49,7 +49,7 @@ class NavigationResult(Result):
         # Later in the code a shortest pseudorange will be selected. Therefore
         # pseudoranges from non-tracking channels must be the longest - e.g.
         # infinite.
-        travelTime = np.Inf * np.ones(settings.numberOfChannels)
+        travelTime = np.inf * np.ones(settings.numberOfChannels)
 
         # Find number of samples per spreading code
         samplesPerCode = settings.samplesPerCode
@@ -58,7 +58,7 @@ class NavigationResult(Result):
         for channelNr in channelList:
             # --- Compute the travel times -----------------------------------------
             travelTime[channelNr] = trackResults[channelNr].absoluteSample[
-                                        np.int(msOfTheSignal[channelNr])] / samplesPerCode
+                                        int(msOfTheSignal[channelNr])] / samplesPerCode
 
         # --- Truncate the travelTime and compute pseudoranges ---------------------
         minimum = np.floor(travelTime.min())
@@ -135,7 +135,7 @@ class NavigationResult(Result):
 
             # The function ephemeris expects input in binary form. In Matlab it is
             # a string array containing only "0" and "1" characters.
-            navBitsBin = map(str, navBits)
+            navBitsBin = list(map(str, navBits))
 
             eph[trackResults[channelNr].PRN - 1], TOW = ephemeris.ephemeris(navBitsBin[1:], navBitsBin[0])
 
@@ -161,7 +161,7 @@ class NavigationResult(Result):
         # the first calculation of receiver position. There is no reference point
         # to find the elevation angle as there is no receiver position estimate at
         # this point.
-        satElev = np.Inf * np.ones(settings.numberOfChannels)
+        satElev = np.inf * np.ones(settings.numberOfChannels)
 
         # Save the active channel list. The list contains satellites that are
         # tracked and have the required ephemeris data. In the next step the list
@@ -175,28 +175,36 @@ class NavigationResult(Result):
         #   Do the satellite and receiver position calculations                  #
         ###########################################################################
         # Initialization of current measurement ==================================
-        channel = np.rec.array([(np.zeros((settings.numberOfChannels, 64)),
-                                 np.nan * np.ones((settings.numberOfChannels, 64)),
-                                 np.nan * np.ones((settings.numberOfChannels, 64)),
-                                 np.nan * np.ones((settings.numberOfChannels, 64)),
-                                 np.nan * np.ones((settings.numberOfChannels, 64))
+        numMeasurements = int(
+            np.fix(
+                (settings.msToProcess - subFrameStart.max())
+                / settings.navSolPeriod
+            )
+        )
+        storageLength = max(64, numMeasurements)
+
+        channel = np.rec.array([(np.zeros((settings.numberOfChannels, storageLength)),
+                                 np.nan * np.ones((settings.numberOfChannels, storageLength)),
+                                 np.nan * np.ones((settings.numberOfChannels, storageLength)),
+                                 np.nan * np.ones((settings.numberOfChannels, storageLength)),
+                                 np.nan * np.ones((settings.numberOfChannels, storageLength))
                                  )], formats=['O'] * 5, names='PRN,el,az,rawP,correctedP')
         navSolutions = np.rec.array([(channel,
-                                      np.zeros((5, 64)),
-                                      np.nan * np.ones(64),
-                                      np.nan * np.ones(64),
-                                      np.nan * np.ones(64),
-                                      np.nan * np.ones(64),
-                                      np.nan * np.ones(64),
-                                      np.nan * np.ones(64),
-                                      np.nan * np.ones(64),
+                                      np.zeros((5, storageLength)),
+                                      np.nan * np.ones(storageLength),
+                                      np.nan * np.ones(storageLength),
+                                      np.nan * np.ones(storageLength),
+                                      np.nan * np.ones(storageLength),
+                                      np.nan * np.ones(storageLength),
+                                      np.nan * np.ones(storageLength),
+                                      np.nan * np.ones(storageLength),
                                       0,
-                                      np.nan * np.ones(64),
-                                      np.nan * np.ones(64),
-                                      np.nan * np.ones(64)
+                                      np.nan * np.ones(storageLength),
+                                      np.nan * np.ones(storageLength),
+                                      np.nan * np.ones(storageLength)
                                       )], formats=['O'] * 13,
                                     names='channel,DOP,X,Y,Z,dt,latitude,longitude,height,utmZone,E,N,U')
-        for currMeasNr in range(np.int(np.fix(settings.msToProcess - subFrameStart.max()) / settings.navSolPeriod)):
+        for currMeasNr in range(int(np.fix(settings.msToProcess - subFrameStart.max()) / settings.navSolPeriod)):
             # Exclude satellites, that are below elevation mask
             activeChnList = np.intersect1d((satElev >= settings.elevationMask).nonzero()[0], readyChnList)
 
@@ -324,8 +332,8 @@ class NavigationResult(Result):
         mpl.rc('axes', grid=True, linewidth=1.5, axisbelow=True)
         mpl.rc('lines', linewidth=1.5, solid_joinstyle='bevel')
         mpl.rc('figure', figsize=[8, 6], autolayout=False, dpi=120)
-        mpl.rc('text', usetex=True)
-        mpl.rc('font', family='serif', serif='Computer Modern Roman', size=10)
+        mpl.rc('text', usetex=False)
+        mpl.rc('font', family='serif', size=10)
         mpl.rc('mathtext', fontset='cm')
 
         # mpl.rc('font', size=16)
@@ -409,9 +417,7 @@ class NavigationResult(Result):
             h31.plot((navSolutions[0].E - refCoord.E).T,
                      (navSolutions[0].N - refCoord.N).T,
                      (navSolutions[0].U - refCoord.U).T, '+')
-            h31.hold(True)
             h31.plot([0], [0], [0], 'r+', lw=1.5, ms=10)
-            h31.hold(False)
             # h31.viewLim(0,90)
             h31.axis('equal')
             h31.grid(which='minor')
@@ -434,7 +440,7 @@ class NavigationResult(Result):
             h32.set_yticks([0, 15, 30, 45, 60, 75])
             h32.set_yticklabels([90, 75, 60, 45, 30, 15])
             h32.set_title('Sky plot (mean PDOP: %f )' % np.mean(navSolutions[0].DOP[1, :]))
-            f.show()
+            plt.show()
         else:
             print('plotNavigation: No navigation data to plot.')
 
@@ -581,7 +587,7 @@ class NavigationResult(Result):
             # Find all starting points off all preamble like patterns ================
             # clear('index')
             # clear('index2')
-            xcorrLength = (len(tlmXcorrResult) + 1) / 2
+            xcorrLength = (len(tlmXcorrResult) + 1) // 2
 
             index = (np.abs(tlmXcorrResult[xcorrLength - 1:xcorrLength * 2]) > 153).nonzero()[0] + searchStartOffset
 

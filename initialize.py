@@ -82,17 +82,17 @@ class Settings(object):
         # Processing settings ====================================================
         # Number of milliseconds to be processed used 36000 + any transients (see
         # below - in Nav parameters) to ensure nav subframes are provided
-        self.msToProcess = 10000.0
+        self.msToProcess = 40000.0
 
         # Number of channels to be used for signal processing
-        self.numberOfChannels = 2
+        self.numberOfChannels = 8
 
         # modifyed by mortarboard in 2022 09 20
         # self.skipNumberOfBytes are calculated according to the number of samples and datatype
         self.skipNumberOfSamples=0
         self.skipNumberOfSamples=int(self.skipNumberOfSamples)
 
-        self.fileType=2
+        self.fileType=1
         #1 for real signal, 2 for I/Q signal
 
         # Raw signal file name and other parameter ===============================
@@ -101,15 +101,15 @@ class Settings(object):
         self.fileName = 'test.bin'
 
         # Data type used to store one sample
-        self.dataType = 'float32'
+        self.dataType = 'int8'
 
         # calculate skip bytes
         self.skipNumberOfBytes = int(self.skipNumberOfSamples*self.fileType*np.dtype(self.dataType).itemsize)
 
         # Intermediate, sampling and code frequencies
-        self.IF = 0
+        self.IF = 9.55e6
 
-        self.samplingFreq = 2.6e6
+        self.samplingFreq = 38.192e6
 
         self.codeFreqBasis = 1.023e6
 
