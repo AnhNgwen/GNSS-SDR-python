@@ -117,7 +117,7 @@ Height:
 1630.4 m
 
 Mean PDOP:
-approximately 1.688877
+approximately 1.888877
 
 ## Known baseline issues
 
