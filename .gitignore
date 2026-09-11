@@ -6,11 +6,26 @@ __pycache__/
 *$py.class
 
 # =========================
+# Python tool caches
+# =========================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# =========================
 # Virtual environments
 # =========================
 .venv/
 venv/
 env/
+
+# =========================
+# Environment / local secrets
+# =========================
+.env
+.env.*
+!.env.example
 
 # =========================
 # IDE / Editor
@@ -23,23 +38,34 @@ env/
 # =========================
 trackingResults_python.npy
 
-output/
-outputs/
-results/
-logs/
+/output/
+/outputs/
+/results/
+/logs/
 
 *.log
 
 # =========================
 # Raw GNSS datasets
-# Do not commit large IQ files
 # =========================
-datasets/
-data/
+/datasets/*
+!/datasets/README.md
+
+/data/*
+!/data/README.md
 
 *.bin
 *.raw
 *.iq
+
+# =========================
+# Python build / coverage
+# =========================
+build/
+dist/
+*.egg-info/
+.coverage
+htmlcov/
 
 # =========================
 # OS generated files
