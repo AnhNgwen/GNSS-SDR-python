@@ -85,4 +85,4 @@ gnssStart = True
 
 if gnssStart:
     #print' '
-    settings.postProcessing()
+    acqResults, trackResults, navResults = settings.postProcessing()

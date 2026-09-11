@@ -608,6 +608,7 @@ class Settings(object):
                 if not settings.plotTracking:
                     trackResults.plot()
                 navResults.plot()
+                return acqResults, trackResults, navResults
                 #print'Post processing of the signal is over.'
         except IOError as e:
             # Error while opening the data file.
