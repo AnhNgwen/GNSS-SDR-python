@@ -1,0 +1,48 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# =========================
+# Virtual environments
+# =========================
+.venv/
+venv/
+env/
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# GNSS-SDR generated files
+# =========================
+trackingResults_python.npy
+
+output/
+outputs/
+results/
+logs/
+
+*.log
+
+# =========================
+# Raw GNSS datasets
+# Do not commit large IQ files
+# =========================
+datasets/
+data/
+
+*.bin
+*.raw
+*.iq
+
+# =========================
+# OS generated files
+# =========================
+.DS_Store
+Thumbs.db
